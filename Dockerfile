@@ -1,6 +1,6 @@
 # ---- Build Stage ----
-FROM eclipse-temurin:17-jdk-alpine AS builder
-
+#17-jre-jammy gets updated if the JDK is changed (21 or something else) --uses Ubuntu 22.04
+    FROM eclipse-temurin:17-jdk-jammy AS builder
 WORKDIR /app
 
 COPY . .
@@ -9,8 +9,8 @@ COPY . .
 RUN ./mvnw package -DskipTests 
 
 # ---- Run Stage ----
-    #17-jre-alpine gets updated if the JDK is changed (21 or something else)
-FROM eclipse-temurin:17-jre-alpine 
+    #17-jre-jammy gets updated if the JDK is changed (21 or something else)
+FROM eclipse-temurin:17-jre-jammy
 
 WORKDIR /app
 
