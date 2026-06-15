@@ -1,33 +1,65 @@
 pipeline {
     agent any
-    // Set environment variables 
+
     environment {
-        ARTIFACTORY_URL     = 'http://localhost:8082/artifactory'
-        ARTIFACTORY_REPO    = 'petclinic-libs-release'
-        DOCKER_IMAGE        = 'spring-petclinic'
-        DOCKER_TAG          = "${env.BUILD_NUMBER}"
-        ARTIFACTORY_CREDS   = credentials('artifactory-credentials')
+        DOCKER_IMAGE = 'spring-petclinic'
+        DOCKER_TAG   = "${env.BUILD_NUMBER}"
     }
 
     tools {
         maven 'Maven'
         jdk   'JDK17'
     }
-    // Set build stages
-    stages {
 
+    stages {
         // Checkout Git Repo
         stage('Checkout') {
             steps {
-                checkout scm 
+                checkout scm
             }
         }
 
-        stage('Hello Print'){
+        stage('Compile') {
             steps {
-                echo 'Hello World'
+                sh 'mvn compile -DskipTests' // Skip tests because we are running them later
             }
         }
+
+        stage('Test') {
+            steps {
+                sh 'mvn test'
+            }
+            post {
+                always {
+                    junit '**/target/surefire-reports/*.xml'
+                }
+            }
+        }
+
+        stage('Package') {
+            steps {
+                sh 'mvn package -DskipTests' //Package into JAR file to build docker image onto
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                sh "docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} ."
+                sh "docker tag ${DOCKER_IMAGE}:${DOCKER_TAG} ${DOCKER_IMAGE}:latest"
+            }
+        }
+
     }
 
+    post {
+        success {
+            echo "Build ${env.BUILD_NUMBER} succeeded. Image: ${DOCKER_IMAGE}:${DOCKER_TAG}"
+        }
+        failure {
+            echo "Build ${env.BUILD_NUMBER} failed."
+        }
+        always {
+            cleanWs()
+        }
+    }
 }
