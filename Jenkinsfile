@@ -4,6 +4,9 @@ pipeline {
     environment {
         DOCKER_IMAGE = 'spring-petclinic'
         DOCKER_TAG   = "${env.BUILD_NUMBER}"
+        ARTIFACTORY_REPO = 'spring-petclinic'
+        ARTIFACTORY_URL  = 'http://localhost:8082/artifactory'
+        ARTIFACTORY_CREDS = credentials('artifactory-credentials')
     }
 
     tools {
@@ -16,6 +19,28 @@ pipeline {
         stage('Checkout') {
             steps {
                 checkout scm
+            }
+        }
+        stage('Configure JCenter via Artifactory') {
+            steps {
+                writeFile file: 'settings.xml', text: """
+<settings xmlns="http://maven.apache.org/SETTINGS/1.0.0">
+  <servers>
+    <server>
+      <id>artifactory</id>
+      <username>${ARTIFACTORY_CREDS_USR}</username>
+      <password>${ARTIFACTORY_CREDS_PSW}</password>
+    </server>
+  </servers>
+  <mirrors>
+    <mirror>
+      <id>artifactory</id>
+      <mirrorOf>*</mirrorOf>
+      <url>${ARTIFACTORY_URL}/${ARTIFACTORY_REPO}</url>
+    </mirror>
+  </mirrors>
+</settings>
+"""
             }
         }
 
@@ -48,6 +73,16 @@ pipeline {
                 sh "docker tag ${DOCKER_IMAGE}:${DOCKER_TAG} ${DOCKER_IMAGE}:latest"
             }
         }
+        stage('Publish Artifact to Artifactory') {
+            steps {
+                sh """
+                    mvn -s settings.xml deploy \
+                        -DskipTests \
+                        -DaltDeploymentRepository=artifactory::default::${ARTIFACTORY_URL}/${ARTIFACTORY_REPO}
+                """
+            }
+        }
+
 
     }
 
