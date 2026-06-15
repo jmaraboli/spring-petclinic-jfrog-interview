@@ -4,7 +4,7 @@ pipeline {
     environment {
         DOCKER_IMAGE = 'spring-petclinic'
         DOCKER_TAG   = "${env.BUILD_NUMBER}"
-        ARTIFACTORY_REPO = 'spring-petclinic'
+        ARTIFACTORY_REPO = 'spring-petclinic-virtual'
         ARTIFACTORY_URL  = 'http://localhost:8082/artifactory'
         ARTIFACTORY_CREDS = credentials('artifactory-credentials')
     }
