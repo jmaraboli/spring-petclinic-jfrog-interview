@@ -24,7 +24,7 @@ pipeline {
         stage('Configure JCenter via Artifactory') {
             steps {
                 withCredentials([usernamePassword(
-                    credentialsId: 'artifactory-credentials'
+                    credentialsId: 'artifactory-credentials',
                     usernameVariable: 'ART_USER',
                     passwordVariable: 'ART_PASS'
                 )]) {
