@@ -25,14 +25,14 @@ pipeline {
                 rtMavenResolver(
                     id: 'maven-resolver',
                     serverId: 'artifactory',
-                    releaseRepo: '${ARTIFACTORY_REPO}',
-                    snapshotRepo: '${ARTIFACTORY_REPO}'
+                    releaseRepo: "${ARTIFACTORY_REPO}",
+                    snapshotRepo: "${ARTIFACTORY_REPO}"
                 )
                 rtMavenDeployer(
                     id: 'maven-deployer',
                     serverId: 'artifactory',
-                    releaseRepo: '${ARTIFACTORY_REPO}',
-                    snapshotRepo: '${ARTIFACTORY_REPO}'
+                    releaseRepo: "${ARTIFACTORY_REPO}",
+                    snapshotRepo: "${ARTIFACTORY_REPO}"
                 )
             }
         }        
