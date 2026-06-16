@@ -48,6 +48,7 @@ pipeline {
 </settings>
 EOF
             '''
+                }
             }
         }
 
