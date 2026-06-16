@@ -23,24 +23,31 @@ pipeline {
         }
         stage('Configure JCenter via Artifactory') {
             steps {
-                writeFile file: 'settings.xml', text: """
+                withCredentials([usernamePassword(
+                    credentialsId: 'artifactory-credentials'
+                    usernameVariable: 'ART_USER',
+                    passwordVariable: 'ART_PASS'
+                )]) {
+            sh '''
+                cat > settings.xml << EOF
 <settings xmlns="http://maven.apache.org/SETTINGS/1.0.0">
   <servers>
     <server>
       <id>artifactory</id>
-      <username>${ARTIFACTORY_CREDS_USR}</username>
-      <password>${ARTIFACTORY_CREDS_PSW}</password> 
+      <username>$ART_USER</username>
+      <password>$ART_PASS</password>
     </server>
   </servers>
   <mirrors>
     <mirror>
       <id>artifactory</id>
       <mirrorOf>*</mirrorOf>
-      <url>${ARTIFACTORY_URL}/${ARTIFACTORY_REPO}</url>
+      <url>$ARTIFACTORY_URL/$ARTIFACTORY_REPO</url>
     </mirror>
   </mirrors>
 </settings>
-"""
+EOF
+            '''
             }
         }
 
