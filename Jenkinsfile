@@ -135,7 +135,7 @@ EOF
     //             rtMavenRun(
     //                 tool: 'Maven',
     //                 pom: 'pom.xml',
-    //                 goals: 'compile -DskipTests -U -e', // force maven to update snapshot/releases
+    //                 goals: 'compile -DskipTests -U', // force maven to update snapshot/releases
     //                 resolverId: 'maven-resolver'
     //             )
     //         }
