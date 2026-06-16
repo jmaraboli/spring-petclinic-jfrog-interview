@@ -41,7 +41,7 @@ pipeline {
                 rtMavenRun(
                     tool: 'Maven',
                     pom: 'pom.xml',
-                    goals: 'compile -DskipTests -U', // force maven to update snapshot/releases
+                    goals: 'compile -DskipTests -U -Dmaven.plugin.validation=NONE', // force maven to update snapshot/releases -Dmaven.plugin.validation=NONE springboot requires maven 3.9.9+ but running 3.9.16
                     resolverId: 'maven-resolver'
                 )
             }
