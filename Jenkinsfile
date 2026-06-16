@@ -13,26 +13,29 @@ pipeline {
         maven 'Maven'
         jdk   'JDK17'
     }
-    rtMavenResolver(
-        id: 'maven-resolver',
-        serverId: 'artifactory',
-        releaseRepo: 'spring-petclinic-virtual',
-        snapshotRepo: 'spring-petclinic-virtual'
-    )
 
-    rtMavenDeployer(
-        id: 'maven-deployer',
-        serverId: 'artifactory',
-        releaseRepo: 'spring-petclinic',
-        snapshotRepo: 'spring-petclinic'
-    )
     stages {
         stage('Checkout Repo') {
             steps {
                 checkout scm
             }
         }
-
+        stage('Configure Artifactory') {
+            steps {
+                rtMavenResolver(
+                    id: 'maven-resolver',
+                    serverId: 'artifactory',
+                    releaseRepo: ${ARTIFACTORY_REPO},
+                    snapshotRepo: ${ARTIFACTORY_REPO}
+                )
+                rtMavenDeployer(
+                    id: 'maven-deployer',
+                    serverId: 'artifactory',
+                    releaseRepo: ${ARTIFACTORY_REPO},
+                    snapshotRepo: ${ARTIFACTORY_REPO}
+                )
+            }
+        }        
         stage('Compile') {
             steps {
                 rtMavenRun(
