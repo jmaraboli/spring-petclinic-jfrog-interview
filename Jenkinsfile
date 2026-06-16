@@ -4,7 +4,7 @@ pipeline {
     environment {
         DOCKER_IMAGE = 'spring-petclinic'
         DOCKER_TAG   = "${env.BUILD_NUMBER}"
-        ARTIFACTORY_REPO = 'spring-petclinic-virtual'
+        ARTIFACTORY_REPO = 'spring-petclinic'
         ARTIFACTORY_URL  = 'http://localhost:8082/artifactory' // In an actual system we would have correct URL since it would run in it's own server.
         ARTIFACTORY_CREDS = credentials('artifactory-credentials')
     }
@@ -42,7 +42,7 @@ pipeline {
     <mirror>
       <id>artifactory</id>
       <mirrorOf>*</mirrorOf>
-      <url>$ARTIFACTORY_URL/$ARTIFACTORY_REPO</url>
+      <url>$ARTIFACTORY_URL/$ARTIFACTORY_REPO-virtual</url>
     </mirror>
   </mirrors>
 </settings>
