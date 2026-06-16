@@ -41,7 +41,7 @@ pipeline {
                 rtMavenRun(
                     tool: 'Maven',
                     pom: 'pom.xml',
-                    goals: 'compile -DskipTests',
+                    goals: 'compile -DskipTests -U', // force maven to update snapshot/releases
                     resolverId: 'maven-resolver'
                 )
             }
